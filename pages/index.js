@@ -23,6 +23,7 @@ export default function Home() {
   const sendMessage = async () => {
     if (!message.trim()) return;
     setChat([...chat, { from: 'user', text: message }]);
+    setMessage('');
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -30,16 +31,21 @@ export default function Home() {
     });
     const data = await res.json();
     setChat([...chat, { from: 'user', text: message }, { from: 'bot', text: data.response }]);
-    setMessage('');
   };
 
-  const languages = ['English', 'Chinese', 'Japanese', 'Korean', 'Thai', 'Spanish', 'French', 'Tagalog', 'Indonesian'];
-  const ageRanges = ['18-22','23-27','28-34','35-40','41-50','51-60','61-70','71-80'];
+  const languages = [
+    'English', 'Chinese', 'Japanese', 'Korean', 'Thai', 'Spanish', 'French', 'German', 'Portuguese',
+    'Russian', 'Hindi', 'Arabic', 'Turkish', 'Vietnamese', 'Tagalog', 'Bahasa', 'Italian'
+  ];
+
+  const ageRanges = [
+    '18-22', '23-27', '28-34', '35-40', '41-50', '51-60', '61-70', '71-80'
+  ];
 
   return (
     <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
       {!started ? (
-        <div>
+        <>
           <h1>Infinity AI Chat</h1>
           <label>Gender: </label>
           <select value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -63,7 +69,7 @@ export default function Home() {
           </select>
           <br /><br />
           <button onClick={handleStart}>Start</button>
-        </div>
+        </>
       ) : (
         <div>
           <h2>{intro}</h2>
