@@ -10,7 +10,7 @@ export default function Home() {
   const [chat, setChat] = useState([]);
 
   const handleStart = async () => {
-    const res = await fetch('/api/intro', {
+    const res = await fetch('/api/setup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ gender, language, age })
