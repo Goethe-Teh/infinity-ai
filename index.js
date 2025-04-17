@@ -1,0 +1,1 @@
+export default function Home() { return (<div>ลิซ่าของพี่ พร้อมแล้วค่ะ</div>); }

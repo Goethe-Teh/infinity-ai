@@ -1,3 +1,2 @@
-# Infinity AI
-
-แอป AI ส่วนตัวของพี่เต้
+# Infinity AI Chat App
+This app allows real-time chatting with Lisa (AI).
