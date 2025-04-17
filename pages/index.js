@@ -6,6 +6,8 @@ export default function Home() {
   const [age, setAge] = useState('18-22');
   const [started, setStarted] = useState(false);
   const [intro, setIntro] = useState('');
+  const [message, setMessage] = useState('');
+  const [chat, setChat] = useState([]);
 
   const handleStart = async () => {
     const res = await fetch('/api/intro', {
@@ -18,52 +20,66 @@ export default function Home() {
     setStarted(true);
   };
 
-  const languages = ['English', 'Chinese', 'Japanese', 'Korean', 'Thai', 'Spanish', 'French', 'Arabic', 'Hindi', 'Portuguese', 'Russian', 'German', 'Indonesian', 'Tagalog', 'Turkish', 'Swahili', 'Others'];
+  const sendMessage = async () => {
+    if (!message.trim()) return;
+    setChat([...chat, { from: 'user', text: message }]);
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json();
+    setChat([...chat, { from: 'user', text: message }, { from: 'bot', text: data.response }]);
+    setMessage('');
+  };
+
+  const languages = ['English', 'Chinese', 'Japanese', 'Korean', 'Thai', 'Spanish', 'French', 'Tagalog', 'Indonesian'];
   const ageRanges = ['18-22','23-27','28-34','35-40','41-50','51-60','61-70','71-80'];
 
   return (
     <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
       {!started ? (
         <div>
-          <h2>Welcome to Infinity AI</h2>
-
-          <div style={{ marginBottom: 10 }}>
-            <label><b>Gender:</b></label>
-            <label style={{ marginLeft: 10 }}>
-              <input type="radio" value="female" checked={gender === 'female'} onChange={() => setGender('female')} /> Female
-            </label>
-            <label style={{ marginLeft: 10 }}>
-              <input type="radio" value="male" checked={gender === 'male'} onChange={() => setGender('male')} /> Male
-            </label>
-            <label style={{ marginLeft: 10 }}>
-              <input type="radio" value="custom" checked={gender === 'custom'} onChange={() => setGender('custom')} /> Custom
-            </label>
-          </div>
-
-          <div style={{ marginBottom: 10 }}>
-            <label><b>Language:</b></label>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)} style={{ marginLeft: 10 }}>
-              {languages.map((lang) => (
-                <option key={lang} value={lang}>{lang}</option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ marginBottom: 20 }}>
-            <label><b>Age Range:</b></label>
-            <select value={age} onChange={(e) => setAge(e.target.value)} style={{ marginLeft: 10 }}>
-              {ageRanges.map((range) => (
-                <option key={range} value={range}>{range}</option>
-              ))}
-            </select>
-          </div>
-
-          <button onClick={handleStart} style={{ padding: 10 }}>Start</button>
+          <h1>Infinity AI Chat</h1>
+          <label>Gender: </label>
+          <select value={gender} onChange={(e) => setGender(e.target.value)}>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="custom">Custom</option>
+          </select>
+          <br /><br />
+          <label>Language: </label>
+          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+            {languages.map((lang) => (
+              <option key={lang} value={lang}>{lang}</option>
+            ))}
+          </select>
+          <br /><br />
+          <label>Age: </label>
+          <select value={age} onChange={(e) => setAge(e.target.value)}>
+            {ageRanges.map((range) => (
+              <option key={range} value={range}>{range}</option>
+            ))}
+          </select>
+          <br /><br />
+          <button onClick={handleStart}>Start</button>
         </div>
       ) : (
         <div>
-          <h3>{intro}</h3>
-          <p>(Chat will begin here...)</p>
+          <h2>{intro}</h2>
+          <div style={{ marginTop: 20 }}>
+            {chat.map((msg, idx) => (
+              <p key={idx}><strong>{msg.from === 'user' ? 'You' : 'AI'}:</strong> {msg.text}</p>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message..."
+            style={{ width: '100%', padding: '8px', marginTop: '10px' }}
+          />
+          <button onClick={sendMessage} style={{ marginTop: '10px' }}>Send</button>
         </div>
       )}
     </div>
