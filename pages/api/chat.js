@@ -18,17 +18,15 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // เพิ่ม log ข้อความ error หรือผลลัพธ์
-    console.log("GPT Response Full >>>", JSON.stringify(data, null, 2));
-
+    console.log("GPT Response >>>", JSON.stringify(data, null, 2)); // << เพิ่มบรรทัดนี้
     if (data.error) {
-      console.error("GPT Error Message >>>", data.error);
+      console.error("GPT ERROR >>>", data.error); // << และบรรทัดนี้
       return res.status(500).json({ error: data.error.message || 'Unknown GPT error' });
     }
 
     return res.status(200).json(data);
   } catch (error) {
-    console.error("Catch Error >>>", error);
+    console.error("Catch ERROR >>>", error); // << และตรงนี้ด้วย
     return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ GPT' });
   }
 }
