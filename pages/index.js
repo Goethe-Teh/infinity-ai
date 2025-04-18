@@ -6,12 +6,12 @@ export default function Home() {
   const [language, setLanguage] = useState('');
 
   const handleStart = () => {
-    if (!language) return alert('กรุณาเลือกภาษา');
+    if (!language) return alert('Please select a language');
     router.push(`/chat?language=${language}`);
   };
 
   const languages = [
-    { code: 'th', label: 'ไทย' },
+    { code: 'th', label: 'ไทย (Thai)' },
     { code: 'en', label: 'English' },
     { code: 'zh', label: '中文 (Chinese)' },
     { code: 'ja', label: '日本語 (Japanese)' },
@@ -32,18 +32,19 @@ export default function Home() {
 
   return (
     <div style={{ padding: 30 }}>
-      <h2>ยินดีต้อนรับสู่ Infinity AI</h2>
+      <h3>Hello, I am your personal assistant.</h3>
+      <h2>Welcome to Infinity AI</h2>
 
-      <h4>เลือกภาษาที่คุณต้องการให้ Infinity พูดด้วย:</h4>
+      <h4>Please select your LANGUAGE:</h4>
       <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-        <option value="">-- เลือกภาษา --</option>
+        <option value="">-- Select Language --</option>
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>{lang.label}</option>
         ))}
       </select>
 
       <br /><br />
-      <button onClick={handleStart}>เริ่มต้น</button>
+      <button onClick={handleStart}>Start</button>
     </div>
   );
 }
