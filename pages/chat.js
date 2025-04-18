@@ -3,24 +3,27 @@ import { useEffect, useState } from 'react';
 
 export default function ChatPage() {
   const router = useRouter();
-  const { gender, language } = router.query;
+  const { language } = router.query;
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // สร้างข้อความแรกแบบตั้งค่าภาษาและเพศ AI
+  // สร้างข้อความ system เริ่มต้น
   useEffect(() => {
-    if (gender && language) {
+    if (language) {
       const defaultMessage = {
         role: 'system',
-        content: `You are a personal AI assistant. Speak in ${language}. Your gender is ${gender}.`,
+        content:
+          language === 'th'
+            ? "Infinity: สวัสดี ฉันคือผู้ช่วยส่วนตัวของคุณ ก่อนที่เราจะเริ่ม โปรดตั้งชื่อ ระบุเพศ อายุ รูปร่าง หน้าตา นิสัย หรือความสามารถพิเศษที่คุณอยากให้ฉันเป็น เพื่อให้ฉันปรับตัวได้เหมาะสมกับคุณที่สุด"
+            : "Infinity: Hello, I am your personal assistant. Before we begin, please give me a name, gender, age, appearance, personality, or any special skills you want me to have so I can best match your preferences.",
       };
       setMessages([defaultMessage]);
     }
-  }, [gender, language]);
+  }, [language]);
 
-  // ฟังก์ชันส่งข้อความไปหา API
+  // ส่งข้อความไปยัง API
   const sendMessage = async () => {
     setLoading(true);
     const updatedMessages = [...messages, { role: 'user', content: input }];
@@ -42,12 +45,12 @@ export default function ChatPage() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>AI แชทของคุณ</h2>
+      <h2>AI Chat</h2>
 
       <div style={{ minHeight: '200px', marginBottom: '20px' }}>
         {messages.map((msg, index) => (
           <p key={index}>
-            <b>{msg.role === 'user' ? 'คุณ' : msg.role === 'assistant' ? 'AI' : 'ระบบ'}:</b> {msg.content}
+            <b>{msg.role === 'user' ? 'You' : msg.role === 'assistant' ? 'Infinity' : 'System'}:</b> {msg.content}
           </p>
         ))}
       </div>
@@ -56,10 +59,10 @@ export default function ChatPage() {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         style={{ width: '60%' }}
-        placeholder="พิมพ์ข้อความของคุณที่นี่..."
+        placeholder="Type your message here..."
       />
       <button onClick={sendMessage} disabled={loading} style={{ marginLeft: '10px' }}>
-        {loading ? 'รอสักครู่...' : 'ส่ง'}
+        {loading ? 'Loading...' : 'Send'}
       </button>
     </div>
   );
