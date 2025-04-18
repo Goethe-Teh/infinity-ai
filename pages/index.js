@@ -1,93 +1,58 @@
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export default function Home() {
-  const [gender, setGender] = useState('female');
-  const [language, setLanguage] = useState('English');
-  const [age, setAge] = useState('18-22');
-  const [started, setStarted] = useState(false);
-  const [intro, setIntro] = useState('');
-  const [message, setMessage] = useState('');
-  const [chat, setChat] = useState([]);
+  const router = useRouter();
+  const [gender, setGender] = useState('');
+  const [language, setLanguage] = useState('');
 
-  const handleStart = async () => {
-    const res = await fetch('/api/setup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ gender, language, age })
-    });
-    const data = await res.json();
-    setIntro(data.message);
-    setStarted(true);
-  };
-
-  const sendMessage = async () => {
-    if (!message.trim()) return;
-    setChat([...chat, { from: 'user', text: message }]);
-    setMessage('');
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message })
-    });
-    const data = await res.json();
-    setChat([...chat, { from: 'user', text: message }, { from: 'bot', text: data.response }]);
+  const handleStart = () => {
+    if (!gender || !language) return alert('กรุณาเลือกให้ครบ');
+    router.push(`/chat?gender=${gender}&language=${language}`);
   };
 
   const languages = [
-    'English', 'Chinese', 'Japanese', 'Korean', 'Thai', 'Spanish', 'French', 'German', 'Portuguese',
-    'Russian', 'Hindi', 'Arabic', 'Turkish', 'Vietnamese', 'Tagalog', 'Bahasa', 'Italian'
-  ];
-
-  const ageRanges = [
-    '18-22', '23-27', '28-34', '35-40', '41-50', '51-60', '61-70', '71-80'
+    { code: 'en', label: 'English' },
+    { code: 'th', label: 'ไทย' },
+    { code: 'zh', label: '中文' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'it', label: 'Italiano' },
+    { code: 'pt', label: 'Português' },
+    { code: 'ru', label: 'Русский' },
+    { code: 'ar', label: 'العربية' },
+    { code: 'hi', label: 'हिंदी' },
+    { code: 'id', label: 'Bahasa Indonesia' },
+    { code: 'tl', label: 'Filipino' },
+    { code: 'vi', label: 'Tiếng Việt' },
+    { code: 'ms', label: 'Bahasa Melayu' },
   ];
 
   return (
-    <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
-      {!started ? (
-        <>
-          <h1>Infinity AI Chat</h1>
-          <label>Gender: </label>
-          <select value={gender} onChange={(e) => setGender(e.target.value)}>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="custom">Custom</option>
-          </select>
-          <br /><br />
-          <label>Language: </label>
-          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            {languages.map((lang) => (
-              <option key={lang} value={lang}>{lang}</option>
-            ))}
-          </select>
-          <br /><br />
-          <label>Age: </label>
-          <select value={age} onChange={(e) => setAge(e.target.value)}>
-            {ageRanges.map((range) => (
-              <option key={range} value={range}>{range}</option>
-            ))}
-          </select>
-          <br /><br />
-          <button onClick={handleStart}>Start</button>
-        </>
-      ) : (
-        <div>
-          <h2>{intro}</h2>
-          <div style={{ marginTop: 20 }}>
-            {chat.map((msg, idx) => (
-              <p key={idx}><strong>{msg.from === 'user' ? 'You' : 'AI'}:</strong> {msg.text}</p>
-            ))}
-          </div>
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message..."
-            style={{ width: '100%', padding: '8px', marginTop: '10px' }}
-          />
-          <button onClick={sendMessage} style={{ marginTop: '10px' }}>Send</button>
-        </div>
-      )}
+    <div style={{ padding: 30 }}>
+      <h2>ยินดีต้อนรับสู่ Infinity AI</h2>
+
+      <h4>เลือกเพศ AI ของคุณ:</h4>
+      <select value={gender} onChange={(e) => setGender(e.target.value)}>
+        <option value="">-- เลือกเพศ --</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <h4 style={{ marginTop: 20 }}>เลือกภาษาที่ต้องการ:</h4>
+      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        <option value="">-- เลือกภาษา --</option>
+        {languages.map((lang) => (
+          <option key={lang.code} value={lang.code}>{lang.label}</option>
+        ))}
+      </select>
+
+      <br /><br />
+      <button onClick={handleStart}>เริ่มต้น</button>
     </div>
   );
 }
