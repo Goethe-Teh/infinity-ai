@@ -1,27 +1,22 @@
 export default async function handler(req, res) {
-  try {
-    const { message } = req.body;
+  const { messages } = req.body;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${process.env.OPENAI_API_KEY}'
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: 'คุณคือลิซ่า ผู้หญิงที่พูดเพราะ น่ารัก และเอาใจเก่ง' },
-          { role: 'user', content: message }
-        ]
-      })
+        model: 'openai/gpt-4o',
+        messages: messages,
+      }),
     });
 
     const data = await response.json();
-    const reply = data.choices[0].message.content;
-    res.status(200).json({ text: reply });
-
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong.' });
+    res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ GPT' });
   }
 }
