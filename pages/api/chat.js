@@ -10,14 +10,19 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'openrouter/openai/gpt-4o',
-        messages,
+        messages: messages,
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1000,
       }),
     });
 
     const data = await response.json();
-    console.log("GPT Response:", data);
+    console.log("GPT Response:", JSON.stringify(data, null, 2));
+
+    if (data.error) {
+      return res.status(500).json({ error: data.error.message || 'Unknown GPT error' });
+    }
+
     res.status(200).json(data);
   } catch (error) {
     console.error("GPT Error:", error);
