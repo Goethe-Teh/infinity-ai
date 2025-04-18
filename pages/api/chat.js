@@ -10,22 +10,22 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'openrouter/openai/gpt-4o',
-        messages: messages,
+        messages,
         temperature: 0.7,
         max_tokens: 1000,
       }),
     });
 
     const data = await response.json();
-    console.log("GPT Response:", JSON.stringify(data, null, 2));
+    console.log("GPT Response:", JSON.stringify(data, null, 2)); // << สำคัญมาก
 
     if (data.error) {
       return res.status(500).json({ error: data.error.message || 'Unknown GPT error' });
     }
 
-    res.status(200).json(data);
+    return res.status(200).json(data);
   } catch (error) {
     console.error("GPT Error:", error);
-    res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ GPT' });
+    return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ GPT' });
   }
 }
