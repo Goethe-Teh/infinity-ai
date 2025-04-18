@@ -32,7 +32,7 @@ export default function Home() {
 
   return (
     <div style={{ padding: 30 }}>
-      <h3>Hello, I am your personal assistant.</h3>
+      <h3>Hello I am your personal assistant.</h3>
       <h2>Welcome to Infinity AI</h2>
 
       <h4>Please select your LANGUAGE:</h4>
