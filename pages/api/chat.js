@@ -9,7 +9,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-3.5-turbo',
+        model: 'openai/gpt-4.1',
         messages,
         temperature: 0.7,
         max_tokens: 1000,
