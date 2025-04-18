@@ -9,12 +9,13 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o',
+        model: 'openrouter/openai/gpt-4o',
         messages: messages,
       }),
     });
 
     const data = await response.json();
+    console.log("GPT Response:", data);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเชื่อมต่อ GPT' });
