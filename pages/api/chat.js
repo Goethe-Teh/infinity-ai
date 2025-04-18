@@ -35,8 +35,6 @@ export default function ChatPage() {
     });
 
     const data = await res.json();
-    console.log("GPT raw response:", data);
-
     const reply = data?.choices?.[0]?.message?.content || '[No reply received]';
     setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
     setLoading(false);
