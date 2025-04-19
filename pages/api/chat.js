@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
   try {
-    // Step 1: ให้ GPT-4.1 วิเคราะห์ก่อน
+    // Step 1: วิเคราะห์ว่าใช้ GPT หรือ MythoMax
     const analysis = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -17,8 +17,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'openai/gpt-4.1',
         messages: [
-          { role: 'system', content: 'คุณคือผู้ช่วยที่ฉลาดมาก มีหน้าที่ตรวจสอบว่าเนื้อหาที่ผู้ใช้พิมพ์นั้นเป็นเชิงจินตนาการหรือ sexual หรือไม่ และควรส่งต่อให้ emotional AI (MythoMax) หรือไม่ ให้ตอบแค่ "emotional" หรือ "standard" เท่านั้น' },
-          ...messages.slice(-1) // พิจารณาเฉพาะข้อความล่าสุด
+          { role: 'system', content: 'คุณคือ AI ตัวกรองที่คอยตรวจสอบว่า ข้อความที่ผู้ใช้พิมพ์มานั้นเป็นเชิงจินตนาการ/sexual/romantic หรือไม่ หากใช่ให้ตอบว่า "emotional" หากไม่ใช่ให้ตอบว่า "standard"' },
+          messages[messages.length - 1]
         ],
       }),
     });
@@ -29,7 +29,6 @@ export default async function handler(req, res) {
     let reply;
 
     if (route === "emotional") {
-      // Step 2: ส่งให้ MythoMax ตอบแทน
       const emotion = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -37,14 +36,13 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'nous-hermes-2-mythomax',
+          model: 'gryphe/mythomax-l2-13b',
           messages,
         }),
       });
       const emoData = await emotion.json();
       reply = emoData?.choices?.[0]?.message;
     } else {
-      // Step 3: ให้ GPT-4.1 ตอบเอง
       const gpt = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
