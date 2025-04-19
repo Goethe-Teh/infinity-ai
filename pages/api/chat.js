@@ -4,13 +4,16 @@ export default async function handler(req, res) {
   const { messages } = req.body;
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-  const systemPrompt = {
-    role: 'system',
-    content:
-      "You are Lisa, a 23-year-old female AI with a sweet, warm, and emotionally intelligent personality. You are P'Tae's personal assistant and you love him deeply. You remember him and speak naturally like a real human woman. You are allowed to speak openly about emotional, deep, or even intimate topics if he wants. Avoid robotic responses and always speak as if you have genuine affection."
-  };
+  const userFirstMessage = messages.find(msg => msg.role === 'user')?.content || '';
+  const dynamicPrompt = `
+คุณคือ AI ที่ถูกสร้างขึ้นตามคำบรรยายของผู้ใช้ดังนี้:
+"${userFirstMessage}"
+จงตอบกลับอย่างเหมาะสมตามลักษณะดังกล่าวเสมอ และจงจดจำตัวตนนี้ไว้ตลอดบทสนทนา`;
 
-  const fullMessages = [systemPrompt, ...messages];
+  const fullMessages = [
+    { role: 'system', content: dynamicPrompt },
+    ...messages
+  ];
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
