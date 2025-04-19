@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+mport { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 export default function ChatPage() {
@@ -52,15 +52,36 @@ export default function ChatPage() {
         ))}
       </div>
 
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        style={{ width: '60%' }}
-        placeholder="Type your message here..."
-      />
-      <button onClick={sendMessage} disabled={loading} style={{ marginLeft: '10px' }}>
-        {loading ? 'Loading...' : 'Send'}
-      </button>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          style={{
+            padding: '10px',
+            fontSize: '16px',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            width: '100%',
+          }}
+          placeholder="พิมพ์ข้อความของคุณที่นี่..."
+        />
+
+        <button
+          onClick={sendMessage}
+          disabled={loading || input.trim() === ''}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: loading ? '#ccc' : '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            fontSize: '16px',
+          }}
+        >
+          {loading ? 'กำลังส่ง...' : 'ส่งข้อความ'}
+        </button>
+      </div>
     </div>
   );
 }
