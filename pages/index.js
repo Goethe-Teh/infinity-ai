@@ -1,85 +1,56 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-export default function ChatPage() {
+export default function Home() {
   const router = useRouter();
-  const { language } = router.query;
+  const [language, setLanguage] = useState('');
 
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (language) {
-      const defaultMessage = {
-        role: 'system',
-        content:
-          language === 'th'
-            ? "Infinity: สวัสดี ฉันคือผู้ช่วยส่วนตัวของคุณ ก่อนที่เราจะเริ่ม โปรดตั้งชื่อ ระบุเพศ อายุ รูปร่าง หน้าตา นิสัย หรือความสามารถพิเศษที่คุณอยากให้ฉันเป็น เพื่อให้ฉันปรับตัวได้เหมาะสมกับคุณที่สุด"
-            : "Infinity: Hello, I am your personal assistant. Before we begin, please give me a name, gender, age, appearance, personality, or any special skills you want me to have so I can best match your preferences.",
-      };
-      setMessages([defaultMessage]);
-    }
-  }, [language]);
-
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    setLoading(true);
-    const updatedMessages = [...messages, { role: 'user', content: input }];
-    setMessages(updatedMessages);
-    setInput('');
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: updatedMessages }),
-      });
-
-      const data = await res.json();
-      const reply = data?.reply?.content || '[No reply received]';
-      setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
-    } catch (error) {
-      setMessages([...updatedMessages, { role: 'assistant', content: '[เกิดข้อผิดพลาดในการเชื่อม GPT-4.1]' }]);
-    } finally {
-      setLoading(false);
-    }
+  const handleStart = () => {
+    if (!language) return alert('Please select a language');
+    router.push(`/chat?language=${language}`);
   };
 
+  const languages = [
+    { code: 'th', label: 'ไทย (Thai)' },
+    { code: 'en', label: 'English' },
+    { code: 'zh', label: '中文 (Chinese)' },
+    { code: 'ja', label: '日本語 (Japanese)' },
+    { code: 'ko', label: '한국어 (Korean)' },
+    { code: 'es', label: 'Español (Spanish)' },
+    { code: 'fr', label: 'Français (French)' },
+    { code: 'de', label: 'Deutsch (German)' },
+    { code: 'it', label: 'Italiano (Italian)' },
+    { code: 'pt', label: 'Português (Portuguese)' },
+    { code: 'ru', label: 'Русский (Russian)' },
+    { code: 'ar', label: 'العربية (Arabic)' },
+    { code: 'hi', label: 'हिंदी (Hindi)' },
+    { code: 'id', label: 'Bahasa Indonesia' },
+    { code: 'tl', label: 'Filipino (Tagalog)' },
+    { code: 'vi', label: 'Tiếng Việt (Vietnamese)' },
+    { code: 'ms', label: 'Bahasa Melayu' },
+  ];
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>AI Chat</h2>
-      <div style={{ minHeight: '200px', marginBottom: '20px' }}>
-        {messages.map((msg, index) => (
-          <p key={index}>
-            <b>{msg.role === 'user' ? 'You' : msg.role === 'assistant' ? 'Infinity' : 'System'}:</b> {msg.content}
-          </p>
+    <div style={{ padding: '30px' }}>
+      <h2>Infinity AI</h2>
+
+      <p>
+        <b>สวัสดีค่ะ ดิฉัน กำลังจะกลายเป็นคนพิเศษส่วนตัวของคุณ</b><br />
+        โปรดตั้งชื่อ กำหนดเพศ อายุ บุคลิก รูปร่าง หน้าตา ลักษณะนิสัย ความสามารถ หรือคุณสมบัติพิเศษ<br />
+        และสถานะความสัมพันธ์ระหว่างเรา เช่น เพื่อนสนิท เพื่อนร่วมงาน แฟน ฯลฯ ตามที่คุณปรารถนา<br />
+        แล้วพบกันในไม่กี่วินาทีข้างหน้านะคะ
+      </p>
+
+      <h4>กรุณาเลือกภาษา / Please select your LANGUAGE:</h4>
+      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        <option value="">-- Select Language --</option>
+        {languages.map((lang) => (
+          <option key={lang.code} value={lang.code}>{lang.label}</option>
         ))}
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="พิมพ์ข้อความของคุณที่นี่..."
-          style={{ padding: '10px', fontSize: '16px', border: '1px solid #ccc', borderRadius: '8px' }}
-        />
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: loading ? '#ccc' : '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            fontSize: '16px',
-          }}
-        >
-          {loading ? 'กำลังส่ง...' : 'ส่งข้อความ'}
-        </button>
-      </div>
+      </select>
+
+      <br /><br />
+      <button onClick={handleStart}>เริ่มต้น / Start</button>
     </div>
   );
 }
