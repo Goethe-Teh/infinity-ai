@@ -34,10 +34,9 @@ export default function ChatPage() {
       body: JSON.stringify({ messages: updatedMessages }),
     });
 
-    const data = await res.json();
-    const reply = data?.choices?.[0]?.message?.content || '[No reply received]';
-    setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
-    setLoading(false);
+    const reply = data?.reply || data?.choices?.[0]?.message?.content || '[No reply received]';
+setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
+setLoading(false);
   };
 
   return (
