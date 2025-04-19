@@ -43,7 +43,6 @@ export default function ChatPage() {
   return (
     <div style={{ padding: '20px' }}>
       <h2>AI Chat</h2>
-
       <div style={{ minHeight: '200px', marginBottom: '20px' }}>
         {messages.map((msg, index) => (
           <p key={index}>
@@ -51,7 +50,6 @@ export default function ChatPage() {
           </p>
         ))}
       </div>
-
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <input
           value={input}
@@ -65,7 +63,6 @@ export default function ChatPage() {
           }}
           placeholder="พิมพ์ข้อความของคุณที่นี่..."
         />
-
         <button
           onClick={sendMessage}
           disabled={loading || input.trim() === ''}
