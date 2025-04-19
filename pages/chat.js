@@ -13,30 +13,36 @@ export default function ChatPage() {
     if (language) {
       const defaultMessage = {
         role: 'system',
-        content: language === 'th'
-          ? 'Infinity: สวัสดีค่ะ ดิฉันคือผู้ช่วยส่วนตัวของคุณ ก่อนที่เราจะเริ่ม โปรดตั้งชื่อ ระบุเพศ อายุ รูปร่าง หน้าตา นิสัย หรือความสามารถพิเศษที่คุณอยากให้ฉันเป็น เพื่อให้ฉันปรับตัวได้เหมาะสมกับคุณที่สุด'
-          : 'Infinity: Hello! I’m your personal assistant. Before we begin, please tell me your desired name, gender, age, appearance, personality, special traits, and your relationship status with me, such as friend, assistant, or lover.',
+        content:
+          language === 'th'
+            ? "Infinity: สวัสดีค่ะ ดิฉัน กำลังจะกลายเป็นคนพิเศษส่วนตัวของคุณ โปรดตั้งชื่อ กำหนดเพศ อายุ บุคลิก รูปร่าง หน้าตา ลักษณะนิสัย ความสามารถ หรือคุณสมบัติพิเศษ และสถานะความสัมพันธ์ระหว่างเรา เช่น เพื่อนสนิท เพื่อนร่วมงาน แฟน ฯลฯ ตามที่คุณปรารถนา แล้วพบกันในอีกไม่กี่วินาทีข้างหน้านะคะ"
+            : "Infinity: Hello, I’m about to become your personal companion. Please describe my name, gender, age, appearance, personality, special traits, or relationship between us (e.g., friend, assistant, lover) so I can become who you truly need.",
       };
       setMessages([defaultMessage]);
     }
   }, [language]);
 
   const sendMessage = async () => {
+    if (!input.trim()) return;
     setLoading(true);
     const updatedMessages = [...messages, { role: 'user', content: input }];
     setMessages(updatedMessages);
     setInput('');
 
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: updatedMessages }),
-    });
-
-    const data = await res.json();
-    const reply = data?.reply || '[เกิดข้อผิดพลาด]';
-    setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: updatedMessages }),
+      });
+      const data = await res.json();
+      const reply = data?.reply?.content || '[No reply received]';
+      setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
+    } catch (err) {
+      setMessages([...updatedMessages, { role: 'assistant', content: '[Error communicating with server]' }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -50,11 +56,11 @@ export default function ChatPage() {
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="พิมพ์ข้อความของคุณที่นี่..."
+        placeholder="Type your message here..."
         style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
       />
       <button onClick={sendMessage} disabled={loading || !input.trim()}>
-        {loading ? 'กำลังส่ง...' : 'ส่งข้อความ'}
+        {loading ? 'Sending...' : 'Send'}
       </button>
     </div>
   );
