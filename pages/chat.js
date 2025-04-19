@@ -16,7 +16,7 @@ export default function ChatPage() {
         content:
           language === 'th'
             ? "Infinity: สวัสดี ฉันคือผู้ช่วยส่วนตัวของคุณ ก่อนที่เราจะเริ่ม โปรดตั้งชื่อ ระบุเพศ อายุ รูปร่าง หน้าตา นิสัย หรือความสามารถพิเศษที่คุณอยากให้ฉันเป็น เพื่อให้ฉันปรับตัวได้เหมาะสมกับคุณที่สุด"
-            : "Infinity: Hello, I am your personal assistant. Before we begin, please give me a name, gender, age, appearance, personality, or any special skills you want me to have so I can best match your preferences.",
+            : "Infinity: Hello, I am your personal assistant. Before we begin, please tell me a name, gender, age, appearance, personality, or any special traits you'd like me to have so I can match you perfectly.",
       };
       setMessages([defaultMessage]);
     }
@@ -24,7 +24,6 @@ export default function ChatPage() {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
     setLoading(true);
     const updatedMessages = [...messages, { role: 'user', content: input }];
     setMessages(updatedMessages);
@@ -38,24 +37,17 @@ export default function ChatPage() {
       });
 
       const data = await res.json();
-
-      // รองรับหลายโครงสร้างจาก API
-      const reply =
-        data?.choices?.[0]?.message?.content ||
-        data?.reply?.choices?.[0]?.message?.content ||
-        data?.reply?.content ||
-        '[No reply received]';
-
+      const reply = data?.reply || '[เกิดข้อผิดพลาด]';
       setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
     } catch (err) {
-      setMessages([...updatedMessages, { role: 'assistant', content: '[เกิดข้อผิดพลาด]' }]);
-    } finally {
-      setLoading(false);
+      setMessages([...updatedMessages, { role: 'assistant', content: '[เกิดข้อผิดพลาดในการเชื่อมต่อ]' }]);
     }
+
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: 30 }}>
       <h2>AI Chat</h2>
       <div style={{ minHeight: '200px', marginBottom: '20px' }}>
         {messages.map((msg, index) => (
@@ -64,35 +56,15 @@ export default function ChatPage() {
           </p>
         ))}
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          style={{
-            padding: '10px',
-            fontSize: '16px',
-            border: '1px solid #ccc',
-            borderRadius: '8px',
-            width: '100%',
-          }}
-          placeholder="พิมพ์ข้อความของคุณที่นี่..."
-        />
-        <button
-          onClick={sendMessage}
-          disabled={loading || input.trim() === ''}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: loading ? '#ccc' : '#007bff',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            fontSize: '16px',
-          }}
-        >
-          {loading ? 'กำลังส่ง...' : 'ส่งข้อความ'}
-        </button>
-      </div>
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="พิมพ์ข้อความของคุณที่นี่..."
+        style={{ padding: 10, width: '100%', marginBottom: 10 }}
+      />
+      <button onClick={sendMessage} disabled={loading || !input.trim()}>
+        {loading ? 'กำลังส่ง...' : 'ส่งข้อความ'}
+      </button>
     </div>
   );
 }
