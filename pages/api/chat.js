@@ -1,33 +1,26 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+  if (req.method !== 'POST') return res.status(405).end();
   const { messages } = req.body;
 
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const openaiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'openrouter/gpt-4.1',
-        messages
-      })
+        model: 'openai/gpt-4.1',
+        messages,
+      }),
     });
 
-    const data = await response.json();
+    const data = await openaiRes.json();
+    const reply = data?.choices?.[0]?.message?.content || '[No reply received]';
 
-    if (data?.choices?.[0]?.message?.content) {
-      res.status(200).json({ reply: data.choices[0].message.content });
-    } else {
-      res.status(200).json({ reply: '[No reply received]' });
-    }
+    res.status(200).json({ reply });
   } catch (error) {
-    console.error('API error:', error);
+    console.error('Error in /api/chat:', error);
     res.status(500).json({ reply: '[เกิดข้อผิดพลาด]' });
   }
 }
