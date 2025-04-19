@@ -7,7 +7,7 @@ export default function Home() {
 
   const handleStart = () => {
     if (!language) return alert('Please select a language');
-    router.push(`/chat-new?language=${language}`);
+    router.push(`/chat?language=${language}`);
   };
 
   const languages = [
