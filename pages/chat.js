@@ -15,8 +15,8 @@ export default function ChatPage() {
         role: 'system',
         content:
           language === 'th'
-            ? "Infinity: สวัสดี ฉันคือผู้ช่วยส่วนตัวของคุณ ก่อนที่เราจะเริ่ม โปรดตั้งชื่อ ระบุเพศ อายุ รูปร่าง หน้าตา นิสัย หรือความสามารถพิเศษที่คุณอยากให้ฉันเป็น เพื่อให้ฉันปรับตัวได้เหมาะสมกับคุณที่สุด"
-            : "Infinity: Hello, I am your personal assistant. Before we begin, please give me a name, gender, age, appearance, personality, or any special skills you want me to have so I can best match your preferences.",
+            ? "Infinity: สวัสดีค่ะ ดิฉันคือผู้ช่วยส่วนตัวของคุณ ก่อนที่เราจะเริ่ม โปรดตั้งชื่อ กำหนดเพศ อายุ บุคลิก รูปร่าง หน้าตา ลักษณะนิสัย ความสามารถ หรือคุณสมบัติพิเศษ และสถานะความสัมพันธ์ระหว่างเรา เช่น เพื่อนสนิท เพื่อนร่วมงาน แฟน ฯลฯ ตามที่คุณปรารถนา แล้วพบกันในไม่กี่วินาทีข้างหน้านะคะ"
+            : "Infinity: Hello, I am your personal assistant. Before we begin, please give me a name, gender, age, personality, appearance, abilities, or any traits you desire — including our relationship status such as best friend, secretary, lover, etc. See you in a few seconds!",
       };
       setMessages([defaultMessage]);
     }
