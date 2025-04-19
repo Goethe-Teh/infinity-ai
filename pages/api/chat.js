@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
   try {
-    // Step 1: วิเคราะห์ว่าใช้ GPT หรือ MythoMax
+    // วิเคราะห์ว่าเป็นข้อความแนว emotional หรือ standard
     const analysis = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -15,9 +15,9 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4.1',
+        model: 'openai/gpt-4',
         messages: [
-          { role: 'system', content: 'คุณคือ AI ตัวกรองที่คอยตรวจสอบว่า ข้อความที่ผู้ใช้พิมพ์มานั้นเป็นเชิงจินตนาการ/sexual/romantic หรือไม่ หากใช่ให้ตอบว่า "emotional" หากไม่ใช่ให้ตอบว่า "standard"' },
+          { role: 'system', content: 'คุณคือ AI ตัวกรอง ตรวจสอบว่า user พิมพ์มาเป็น sexual/จินตนาการ หรือไม่ ถ้าใช่ตอบว่า "emotional" ถ้าไม่ใช่ให้ตอบว่า "standard"' },
           messages[messages.length - 1]
         ],
       }),
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'openai/gpt-4.1',
+          model: 'openai/gpt-4',
           messages,
         }),
       });
