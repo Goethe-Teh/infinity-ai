@@ -1,3 +1,4 @@
+
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -6,7 +7,7 @@ export default function Home() {
   const [language, setLanguage] = useState('');
 
   const handleStart = () => {
-    if (!language) return alert('Please select a language');
+    if (!language) return alert('กรุณาเลือกภาษา');
     router.push(`/chat?language=${language}`);
   };
 
@@ -33,21 +34,19 @@ export default function Home() {
   return (
     <div style={{ padding: 30 }}>
       <h2>Infinity AI</h2>
-      <p>
-        <b>สวัสดีค่ะ ดิฉัน กำลังจะกลายเป็นคนพิเศษส่วนตัวของคุณ</b><br />
+      <p><b>สวัสดีค่ะ ดิฉัน กำลังจะกลายเป็นคนพิเศษส่วนตัวของคุณ</b><br />
         โปรดตั้งชื่อ กำหนดเพศ อายุ บุคลิก รูปร่าง หน้าตา ลักษณะนิสัย ความสามารถ หรือคุณสมบัติพิเศษ<br />
         และสถานะความสัมพันธ์ระหว่างเรา เช่น เพื่อนสนิท เพื่อนร่วมงาน แฟน ฯลฯ ตามที่คุณปรารถนา<br />
         แล้วพบกันในอีกไม่กี่วินาทีข้างหน้านะคะ
       </p>
-      <h4>Please select your LANGUAGE:</h4>
       <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-        <option value="">-- Select Language --</option>
+        <option value="">-- เลือกภาษา --</option>
         {languages.map((lang) => (
           <option key={lang.code} value={lang.code}>{lang.label}</option>
         ))}
       </select>
       <br /><br />
-      <button onClick={handleStart}>Start</button>
+      <button onClick={handleStart}>เริ่มต้น</button>
     </div>
   );
 }
