@@ -23,20 +23,35 @@ export default function ChatPage() {
   }, [language]);
 
   const sendMessage = async () => {
+    if (!input.trim()) return;
+
     setLoading(true);
     const updatedMessages = [...messages, { role: 'user', content: input }];
     setMessages(updatedMessages);
     setInput('');
 
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: updatedMessages }),
-    });
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: updatedMessages }),
+      });
 
-    const reply = data?.reply || data?.choices?.[0]?.message?.content || '[No reply received]';
-setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
-setLoading(false);
+      const data = await res.json();
+
+      // รองรับหลายโครงสร้างจาก API
+      const reply =
+        data?.choices?.[0]?.message?.content ||
+        data?.reply?.choices?.[0]?.message?.content ||
+        data?.reply?.content ||
+        '[No reply received]';
+
+      setMessages([...updatedMessages, { role: 'assistant', content: reply }]);
+    } catch (err) {
+      setMessages([...updatedMessages, { role: 'assistant', content: '[เกิดข้อผิดพลาด]' }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
