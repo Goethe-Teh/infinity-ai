@@ -40,7 +40,6 @@ export default function Home() {
           <option key={lang.code} value={lang.code}>{lang.label}</option>
         ))}
       </select>
-
       <br /><br />
       <button onClick={handleStart}>Start</button>
     </div>
