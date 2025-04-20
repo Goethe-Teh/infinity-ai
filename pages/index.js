@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <div style={{ padding: 30 }}>
       <h2>Hello, welcome to Infinity AI</h2>
-      <h4>Please select your LANGUAHE:</h4>
+      <h4>Please select your LANGUAGE:</h4>
       <select value={language} onChange={(e) => setLanguage(e.target.value)}>
         <option value="">-- Select Language --</option>
         {languages.map((lang) => (
